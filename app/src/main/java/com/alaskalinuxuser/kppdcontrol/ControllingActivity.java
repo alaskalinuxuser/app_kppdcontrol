@@ -47,7 +47,7 @@ public class ControllingActivity extends AppCompatActivity {
     String directoryString;
     SeekBar SBR, SBG, SBB, SBSat, SBVal, SBCon, SBHue;
     int RedBar, GreenBar, BlueBar, SatBar, ValBar, ConBar, HueBar, invertEd;
-    Boolean onBoot, grayScale, inverTED, kStart;
+    Boolean onBoot, grayScale, inverTED, kNotStarted;
     Switch SonBoot, SGrayScale, SInverted;
 
     // Get the application context for the notification.
@@ -104,7 +104,7 @@ public class ControllingActivity extends AppCompatActivity {
         onBoot = false;
         grayScale = false;
         inverTED = false;
-        kStart = false;
+        kNotStarted = true;
 
         // Define our initial switches.
         SonBoot = (Switch) findViewById(R.id.switchBoot);
@@ -209,7 +209,8 @@ public class ControllingActivity extends AppCompatActivity {
             // Set those bytes to a string.
             String contents = new String(bytes);
 
-            // Testing only.//Log.i("WJH", contents);
+            // Testing only.//
+                Log.i("WJH", contents);
 
             String[] splitString = contents.split("[\\=\\[]");
 
@@ -218,7 +219,8 @@ public class ControllingActivity extends AppCompatActivity {
 
             for (int j=0; j < splitString.length;j++) {
 
-                // Testing only.//Log.i("WJH", splitString[j]);
+                // Testing only.//
+                Log.i("WJH", splitString[j]);
 
                 if (j == 6) {
                     RedBar = Integer.parseInt(splitString[j].replaceAll("[\\D]",""));
@@ -421,25 +423,15 @@ public class ControllingActivity extends AppCompatActivity {
     // KPPD start or stop script.
     public void kppdState () {
 
-        // No matter what, stop kppd.
-
-        // stop kppd.
-        String[] kppdStop = {"su", "-c", "pkill -2 kppd"};
-        try {
-            Runtime.getRuntime().exec(kppdStop);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } // End of try catch for stopping kppd.
-
-        // And start kppd if desired.
-        if (kStart) {
+        if (kNotStarted) {
             // starting kppd.
-            String[] kppdStart = {"su", "-c", "kppd " + directoryString + "/documents/kppd.conf"};
+            String[] chmodpost = {"su", "-c", "kppd " + directoryString + "/documents/kppd.conf"};
             try {
-                Runtime.getRuntime().exec(kppdStart);
+                Runtime.getRuntime().exec(chmodpost);
             } catch (IOException e) {
                 e.printStackTrace();
             } // End of try catch for starting kppd.
+            kNotStarted = false;
         }// end if.
 
     } // end kppd state.
@@ -473,9 +465,6 @@ public class ControllingActivity extends AppCompatActivity {
     // What to do when we click enable.
     public void clickEnable (View view) {
 
-        // Since they clicked enable, we know that they want it on.
-        kStart = true;
-
         String exportConfig = "[mdp_version]=5\n[pa_version]=2 \n[red]="+
                 RedBar+"\n[green]="+
                 GreenBar+"\n[blue]="+
@@ -486,7 +475,7 @@ public class ControllingActivity extends AppCompatActivity {
                 ConBar+"\n[invert]="+
                 invertEd;
 
-        //Log.i("WJH", exportConfig); // Testing only.
+        Log.i("WJH", exportConfig); // Testing only.
 
         FileOutputStream fos = null;
 
@@ -512,7 +501,7 @@ public class ControllingActivity extends AppCompatActivity {
             fos.close();
 
             // Tell the user it worked.
-            Toast.makeText(getApplicationContext(), "Changed settings!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Exported file!", Toast.LENGTH_SHORT).show();
 
             // Catch any exception.
         } catch (Exception eX) {
@@ -577,7 +566,7 @@ public class ControllingActivity extends AppCompatActivity {
         } else if (id == R.id.action_gwebsite) {
 
             // Launch the website.
-            Uri uriUrl = Uri.parse("https://github.com/alaskalinuxuser/app_kppdcontrol");
+            Uri uriUrl = Uri.parse("https://github.com/alaskalinuxuser");
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
 
