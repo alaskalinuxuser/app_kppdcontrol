@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/build/intermediates/res/merged/debug/drawable-anydpi-v21/design_ic_visibility.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/c220ef962553cc6ebc8f97879c175f0998d40e5f/output/res/drawable-anydpi-v21/design_ic_visibility.xml"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/build/intermediates/res/merged/debug/drawable-anydpi-v21/design_ic_visibility_off.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/c220ef962553cc6ebc8f97879c175f0998d40e5f/output/res/drawable-anydpi-v21/design_ic_visibility_off.xml"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/build/intermediates/res/merged/debug/drawable-anydpi-v21/design_ic_visibility_off.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/c220ef962553cc6ebc8f97879c175f0998d40e5f/output/res/drawable-anydpi-v21/design_ic_visibility_off.xml"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/build/intermediates/res/merged/debug/drawable-anydpi-v21/design_ic_visibility.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/c220ef962553cc6ebc8f97879c175f0998d40e5f/output/res/drawable-anydpi-v21/design_ic_visibility.xml"
+    }
+]

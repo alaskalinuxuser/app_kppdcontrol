@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.alaskalinuxuser.kppdcontrol.ControllingActivity">
+
+    <item
+        android:id="@+id/action_swebsite"
+        android:orderInCategory="100"
+        android:title="@string/action_swebsite"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_website"
+        android:orderInCategory="100"
+        android:title="@string/action_website"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_gwebsite"
+        android:orderInCategory="100"
+        android:title="@string/action_gwebsite"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher_round.png",
+        "source": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher_round.png",
+        "source": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    }
+]

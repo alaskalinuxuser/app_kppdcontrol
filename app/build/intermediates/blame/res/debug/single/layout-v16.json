@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/apps_small/libGDX_circles_touch/KppdControl/app/build/intermediates/res/merged/debug/layout-v16/notification_template_custom_big.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/bfe19dd93a0ea7c3f1a8ebcfe0d82bb46b1a4a95/output/res/layout-v16/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/alaskalinuxuser/AndroidStudioProjects/released/KppdControl/app/build/intermediates/res/merged/debug/layout-v16/notification_template_custom_big.xml",
+        "source": "/home/alaskalinuxuser/.android/build-cache/bfe19dd93a0ea7c3f1a8ebcfe0d82bb46b1a4a95/output/res/layout-v16/notification_template_custom_big.xml"
+    }
+]
