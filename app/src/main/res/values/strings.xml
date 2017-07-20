@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Kppd Control</string>
+    <string name="title_activity_install">Install KPPD?</string>
+    <string name="title_activity_controlling">KPPD Control Panel</string>
+    <string name="installNow">Install</string>
+    <string name="action_website">AKLU Website</string>
+    <string name="action_swebsite">Savoca Website</string>
+    <string name="action_gwebsite">GitHub</string>
+    <string name="about_app">This app was created by the AlaskaLinuxUser. \n
+        \n KPPD controls were created by Savoca. \n
+        \n Photo by Daniel Watson on Unsplash \n
+        \n Apache license 2.0 \n
+        \n You can always delete the /sdcard/documents/kppd.conf file to return to default settings.</string>
+    <string name="action_about">About</string>
+    <string name="installString">Install the Kcal Post Processing Daemon (KPPD) and configuration files?
+        This will not take long and will reboot your phone once completed. After the reboot,
+     You can open this app again to see the control panel.</string>
+</resources>
