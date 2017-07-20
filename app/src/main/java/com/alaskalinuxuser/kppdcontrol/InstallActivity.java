@@ -35,6 +35,7 @@ import java.io.OutputStream;
 public class InstallActivity extends AppCompatActivity {
 
     Context context;
+    Boolean rebootOK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class InstallActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         context = getApplicationContext();
+        rebootOK = true;
 
         // Get super user permision.
         String[] getSu = {"su", "-c", "ls"};
@@ -91,8 +93,12 @@ public class InstallActivity extends AppCompatActivity {
             myOutput.flush();
             myOutput.close();
             myInput.close();
+            rebootOK = true;
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error: Please check permissions....",
+                    Toast.LENGTH_LONG).show();
+            rebootOK = false;
         } // End of try and catch to copy kppd.
 
         /*
@@ -127,7 +133,7 @@ public class InstallActivity extends AppCompatActivity {
 
         for (int i = 0; i <= timer; i++) {
 
-            if (i == 149999) {
+            if (i == 149999 && rebootOK) {
                 // Reboot...
                 String[] rebootPhone = {"su", "-c", "reboot"};
                 try {

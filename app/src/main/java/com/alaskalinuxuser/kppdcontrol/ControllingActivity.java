@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,8 +48,9 @@ public class ControllingActivity extends AppCompatActivity {
     String directoryString;
     SeekBar SBR, SBG, SBB, SBSat, SBVal, SBCon, SBHue;
     int RedBar, GreenBar, BlueBar, SatBar, ValBar, ConBar, HueBar, invertEd;
-    Boolean onBoot, grayScale, inverTED, kStart, kStop;
+    Boolean onBoot, grayScale, inverTED, kStart, kStop, prefBoot, prefGray;
     Switch SonBoot, SGrayScale, SInverted;
+    SharedPreferences myPrefs;
 
     // Get the application context for the notification.
     public Context context;
@@ -71,6 +73,23 @@ public class ControllingActivity extends AppCompatActivity {
 
         // Define our context for our notification.
         context = getApplicationContext();
+
+        // Set up my shared preferences, where I am hiding the notes.
+        myPrefs = this.getSharedPreferences("com.alaskalinuxuser.kppdcontrol", Context.MODE_PRIVATE);
+
+        try {
+
+            // Let's import our preference for colors and texts...
+            prefBoot = myPrefs.getBoolean("prBoot", false);
+            prefGray = myPrefs.getBoolean("prGray", false);
+
+            Log.i("WJH", String.valueOf(prefBoot)); // Testing only //
+            Log.i("WJH", String.valueOf(prefGray)); // Testing only //
+
+        } catch (Exception a) {
+            // What to log if it fails.
+            Log.i("WJH", "No pref." + a);
+        } // end of try catch for importing preferences.
 
         // Define our seekbars.
         SBR = (SeekBar) findViewById(R.id.seekBarRed);
@@ -123,6 +142,20 @@ public class ControllingActivity extends AppCompatActivity {
 
         // And set up the listeners.
         seekbarListeners();
+
+        if (prefBoot) {
+            SonBoot.setChecked(true);
+        } else {
+            SonBoot.setChecked(false);
+        }
+
+        if (prefGray) {
+            SGrayScale.setChecked(true);
+            grayScale = true;
+            setSliders();
+        } else {
+            SGrayScale.setChecked(false);
+        }
 
     }// End of onCreate
 
@@ -210,7 +243,7 @@ public class ControllingActivity extends AppCompatActivity {
             // Set those bytes to a string.
             String contents = new String(bytes);
 
-            // Testing only.// Log.i("WJH", contents);
+            // Testing only.// Log.i("kppd", contents);
 
             String[] splitString = contents.split("[\\=\\[]");
 
@@ -219,7 +252,7 @@ public class ControllingActivity extends AppCompatActivity {
 
             for (int j=0; j < splitString.length;j++) {
 
-                // Testing only.// Log.i("WJH", splitString[j]);
+                // Testing only.// Log.i("kppd", splitString[j]);
 
                 if (j == 6) {
                     RedBar = Integer.parseInt(splitString[j].replaceAll("[\\D]",""));
@@ -243,7 +276,7 @@ public class ControllingActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            Log.i("WJH", "Can not read file: " + e.toString());
+            Log.i("kppd", "Can not read file: " + e.toString());
         }
 
     } // End of Read config file.
@@ -492,7 +525,7 @@ public class ControllingActivity extends AppCompatActivity {
                 ConBar+"\n[invert]="+
                 invertEd;
 
-        // Log.i("WJH", exportConfig); // Testing only.
+        // Log.i("kppd", exportConfig); // Testing only.
 
         FileOutputStream fos = null;
 
@@ -528,6 +561,10 @@ public class ControllingActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
 
         }
+
+        //And let's save our new preferences.
+        myPrefs.edit().putBoolean("prBoot", onBoot).apply();
+        myPrefs.edit().putBoolean("prGray", grayScale).apply();
 
         // And make sure kppd is on.
         kppdState();
@@ -608,7 +645,7 @@ public class ControllingActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         // Testing only //
-                        Log.i("WJH", "Chose OK.");// Testing only //
+                        Log.i("kppd", "Chose OK.");// Testing only //
                     }
                 })
                 .show(); // Make sure you show your popup or it wont work very well!
