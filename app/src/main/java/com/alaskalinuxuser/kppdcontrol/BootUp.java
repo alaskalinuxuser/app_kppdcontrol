@@ -33,7 +33,7 @@ public class BootUp extends Activity {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auto_start);
+        //setContentView(R.layout.auto_start);
 
         // Set up my shared preferences
         autoPrefs = this.getSharedPreferences("com.alaskalinuxuser.kppdcontrol", Context.MODE_PRIVATE);
@@ -58,7 +58,7 @@ public class BootUp extends Activity {
             try {
                 Runtime.getRuntime().exec(chmodpost);
                 Log.i("kppd", "Auto start kppd.");
-                Toast.makeText(getBaseContext(), "Auto started kppd", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), "Auto started kppd", Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 e.printStackTrace();
             } // End of try catch for starting kppd.
