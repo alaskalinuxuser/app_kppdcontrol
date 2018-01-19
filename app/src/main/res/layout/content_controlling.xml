@@ -22,12 +22,6 @@
             android:orientation="vertical">
 
             <Switch
-                android:id="@+id/switchBoot"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Start On Boot" />
-
-            <Switch
                 android:id="@+id/switchGray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,19 +110,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/buttonEnable"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="clickEnable"
-                android:text="Enable" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/ButtonRestore"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="clickRestore"
-                android:text="Restore" />
+                <Button
+                    android:id="@+id/ButtonRestore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="clickRestore"
+                    android:text="Restore" />
+
+                <Button
+                    android:id="@+id/buttonDisable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="clickDisable"
+                    android:text="Disable" />
+
+                <Button
+                    android:id="@+id/buttonEnable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="clickEnable"
+                    android:text="Enable" />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/imageView"

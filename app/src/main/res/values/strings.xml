@@ -13,6 +13,6 @@
         \n You can always delete the /sdcard/documents/kppd.conf file to return to default settings.</string>
     <string name="action_about">About</string>
     <string name="installString">Install the Kcal Post Processing Daemon (KPPD) and configuration files?
-        This will not take long and will reboot your phone once completed. After the reboot,
+        This will not take long and will exit the app.
      You can open this app again to see the control panel.</string>
 </resources>

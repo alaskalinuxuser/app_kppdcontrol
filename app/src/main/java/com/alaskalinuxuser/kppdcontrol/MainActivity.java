@@ -15,20 +15,12 @@ package com.alaskalinuxuser.kppdcontrol;
 *   limitations under the License.
 */
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,19 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
        if(file.exists()) {
 
-           // Make our intent to go to the install activity/class.
+           // Since it exists, let's go to the controlling activity.
            myIntent = new Intent(getApplicationContext(), ControllingActivity.class);
 
        } else {
 
-           // Since it exists, let's go to the controlling activity.
+           // Make our intent to go to the install activity/class.
            myIntent = new Intent(getApplicationContext(), InstallActivity.class);
 
        }
 
        // And start that intent.
        startActivity(myIntent);
-
+       finish();
 
    } // End of whereTo
 

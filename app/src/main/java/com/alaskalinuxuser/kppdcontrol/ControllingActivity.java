@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,8 +48,9 @@ public class ControllingActivity extends AppCompatActivity {
     String directoryString;
     SeekBar SBR, SBG, SBB, SBSat, SBVal, SBCon, SBHue;
     int RedBar, GreenBar, BlueBar, SatBar, ValBar, ConBar, HueBar, invertEd;
-    Boolean onBoot, grayScale, inverTED, kNotStarted;
-    Switch SonBoot, SGrayScale, SInverted;
+    Boolean grayScale, inverTED, kStart, kStop, prefGray;
+    Switch SGrayScale, SInverted;
+    SharedPreferences myPrefs;
 
     // Get the application context for the notification.
     public Context context;
@@ -69,8 +71,32 @@ public class ControllingActivity extends AppCompatActivity {
             }
         });
 
+        // Copy the files.
+        String[] remountFS = {"su", "-c", "mount -o rw,remount /system"};
+        try {
+            Runtime.getRuntime().exec(remountFS);
+            Toast.makeText(getApplicationContext(), "remounting",
+                    Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } // End of try catch for Copy files.
+
         // Define our context for our notification.
         context = getApplicationContext();
+
+        // Set up my shared preferences, where I am hiding the notes.
+        myPrefs = this.getSharedPreferences("com.alaskalinuxuser.kppdcontrol", Context.MODE_PRIVATE);
+
+        try {
+
+            // Let's import our preference for colors and texts...
+            prefGray = myPrefs.getBoolean("prGray", false);
+            Log.i("WJH", String.valueOf(prefGray)); // Testing only //
+
+        } catch (Exception a) {
+            // What to log if it fails.
+            Log.i("WJH", "No pref." + a);
+        } // end of try catch for importing preferences.
 
         // Define our seekbars.
         SBR = (SeekBar) findViewById(R.id.seekBarRed);
@@ -101,13 +127,12 @@ public class ControllingActivity extends AppCompatActivity {
         invertEd = 0;
 
         // Define our initial booleans.
-        onBoot = false;
         grayScale = false;
         inverTED = false;
-        kNotStarted = true;
+        kStart = false;
+        kStop = false;
 
         // Define our initial switches.
-        SonBoot = (Switch) findViewById(R.id.switchBoot);
         SGrayScale = (Switch) findViewById(R.id.switchGray);
         SInverted = (Switch) findViewById(R.id.switchInverted);
 
@@ -123,6 +148,24 @@ public class ControllingActivity extends AppCompatActivity {
         // And set up the listeners.
         seekbarListeners();
 
+        if (prefGray) {
+            SGrayScale.setChecked(true);
+            grayScale = true;
+            setSliders();
+        } else {
+            SGrayScale.setChecked(false);
+        }
+
+        // Copy the files.
+        String[] chmodkppd = {"su", "-c", "chmod 755 /system/bin/kppd"};
+        try {
+            Runtime.getRuntime().exec(chmodkppd);
+            Toast.makeText(getApplicationContext(), "modding",
+                    Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } // End of try catch for Copy files.
+
     }// End of onCreate
 
     // Check for the config file, if it doesn't exist, create it.
@@ -131,7 +174,7 @@ public class ControllingActivity extends AppCompatActivity {
         // Name of the sdcard.
         directoryString = Environment.getExternalStorageDirectory().getPath();
 
-        File file = new File(directoryString + "/documents/kppd.conf");
+        File file = new File(directoryString + "/kppd.conf");
 
         if(file.exists()) {
 
@@ -149,7 +192,7 @@ public class ControllingActivity extends AppCompatActivity {
                 myInput = getApplicationContext().getAssets().open("postproc.conf");
 
                 // Path to the just created empty file
-                String outFileName = directoryString + "/documents/kppd.conf";
+                String outFileName = directoryString + "/kppd.conf";
 
                 // Open the empty file as the output stream
                 OutputStream myOutput = new FileOutputStream(outFileName);
@@ -169,7 +212,7 @@ public class ControllingActivity extends AppCompatActivity {
             } // End of try and catch to copy kppd.conf.
 
             // Copy the files.
-            String[] chmodpost = {"su", "-c", "chmod 666 "+directoryString+"/documents/kppd.conf"};
+            String[] chmodpost = {"su", "-c", "chmod 666 "+directoryString+"/kppd.conf"};
             try {
                 Runtime.getRuntime().exec(chmodpost);
             } catch (IOException e) {
@@ -188,7 +231,7 @@ public class ControllingActivity extends AppCompatActivity {
         try {
 
             // Load the file location.
-            File file = new File(directoryString+"/documents/kppd.conf");
+            File file = new File(directoryString+"/kppd.conf");
 
             // Get the length of the file.
             int length = (int) file.length();
@@ -209,8 +252,7 @@ public class ControllingActivity extends AppCompatActivity {
             // Set those bytes to a string.
             String contents = new String(bytes);
 
-            // Testing only.//
-                Log.i("WJH", contents);
+            // Testing only.// Log.i("kppd", contents);
 
             String[] splitString = contents.split("[\\=\\[]");
 
@@ -219,8 +261,7 @@ public class ControllingActivity extends AppCompatActivity {
 
             for (int j=0; j < splitString.length;j++) {
 
-                // Testing only.//
-                Log.i("WJH", splitString[j]);
+                // Testing only.// Log.i("kppd", splitString[j]);
 
                 if (j == 6) {
                     RedBar = Integer.parseInt(splitString[j].replaceAll("[\\D]",""));
@@ -244,7 +285,7 @@ public class ControllingActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            Log.i("WJH", "Can not read file: " + e.toString());
+            Log.i("kppd", "Can not read file: " + e.toString());
         }
 
     } // End of Read config file.
@@ -391,15 +432,6 @@ public class ControllingActivity extends AppCompatActivity {
             }
         }); // End seekbar hue.
 
-        SonBoot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // If the slider is checked, set our boolean to true.
-                onBoot = isChecked;
-                nowBoot();
-            }
-        }); // End onboot.
-
         SInverted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -423,23 +455,27 @@ public class ControllingActivity extends AppCompatActivity {
     // KPPD start or stop script.
     public void kppdState () {
 
-        if (kNotStarted) {
+        if (kStop) {
+            // stopping kppd.
+            String[] stopKPPD = {"su", "-c", "pkill -2 kppd"};
+            try {
+                Runtime.getRuntime().exec(stopKPPD);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } // End of try catch for stopping kppd.
+        } // end if stop.
+
+        if (kStart) {
             // starting kppd.
-            String[] chmodpost = {"su", "-c", "kppd " + directoryString + "/documents/kppd.conf"};
+            String[] chmodpost = {"su", "-c", "kppd " + directoryString + "/kppd.conf"};
             try {
                 Runtime.getRuntime().exec(chmodpost);
             } catch (IOException e) {
                 e.printStackTrace();
             } // End of try catch for starting kppd.
-            kNotStarted = false;
-        }// end if.
+        }// end if start.
 
     } // end kppd state.
-
-    public void nowBoot () {
-
-        // ?
-    } // End now Boot.
 
     public void nowGrayScale () {
 
@@ -462,8 +498,17 @@ public class ControllingActivity extends AppCompatActivity {
 
     } // End now invert.
 
+    // How to stop kppd.
+    public void clickDisable (View view) {
+        kStart = false;
+        kStop = true;
+        kppdState();
+    } // End click disable.
+
     // What to do when we click enable.
     public void clickEnable (View view) {
+
+        kStart = true;
 
         String exportConfig = "[mdp_version]=5\n[pa_version]=2 \n[red]="+
                 RedBar+"\n[green]="+
@@ -475,14 +520,14 @@ public class ControllingActivity extends AppCompatActivity {
                 ConBar+"\n[invert]="+
                 invertEd;
 
-        Log.i("WJH", exportConfig); // Testing only.
+        // Log.i("kppd", exportConfig); // Testing only.
 
         FileOutputStream fos = null;
 
         try {
 
             // Put our file together, we will name it the current date and time.
-            final File myFile = new File(directoryString+"/documents/kppd.conf");
+            final File myFile = new File(directoryString+"/kppd.conf");
 
             // If it exists?
             if (!myFile.exists())
@@ -501,7 +546,7 @@ public class ControllingActivity extends AppCompatActivity {
             fos.close();
 
             // Tell the user it worked.
-            Toast.makeText(getApplicationContext(), "Exported file!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Settings Changed!", Toast.LENGTH_SHORT).show();
 
             // Catch any exception.
         } catch (Exception eX) {
@@ -511,6 +556,9 @@ public class ControllingActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
 
         }
+
+        //And let's save our new preferences.
+        myPrefs.edit().putBoolean("prGray", grayScale).apply();
 
         // And make sure kppd is on.
         kppdState();
@@ -566,7 +614,7 @@ public class ControllingActivity extends AppCompatActivity {
         } else if (id == R.id.action_gwebsite) {
 
             // Launch the website.
-            Uri uriUrl = Uri.parse("https://github.com/alaskalinuxuser");
+            Uri uriUrl = Uri.parse("https://github.com/alaskalinuxuser/app_kppdcontrol");
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
 
@@ -591,7 +639,7 @@ public class ControllingActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         // Testing only //
-                        Log.i("WJH", "Chose OK.");// Testing only //
+                        Log.i("kppd", "Chose OK.");// Testing only //
                     }
                 })
                 .show(); // Make sure you show your popup or it wont work very well!

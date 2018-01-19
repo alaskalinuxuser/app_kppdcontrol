@@ -16,17 +16,15 @@ package com.alaskalinuxuser.kppdcontrol;
 */
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +33,7 @@ import java.io.OutputStream;
 public class InstallActivity extends AppCompatActivity {
 
     Context context;
+    Boolean rebootOK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +43,9 @@ public class InstallActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         context = getApplicationContext();
+        rebootOK = true;
 
-        // Get super user permision.
+        // Get super user permission.
         String[] getSu = {"su", "-c", "ls"};
         try {
             Runtime.getRuntime().exec(getSu);
@@ -57,23 +57,18 @@ public class InstallActivity extends AppCompatActivity {
 
     public void installKPPD (View view) {
 
-        // Mount the /system partition as rw.
-        String[] remountRW = {"su", "-c", "mount -o rw,remount /system"};
-        try {
-            Runtime.getRuntime().exec(remountRW);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } // End of try catch for remount rw.
+        // Name of the sdcard.
+        String directoryString = Environment.getExternalStorageDirectory().getPath();
 
         // Open your asset file as the input stream
         InputStream myInput;
 
-        // Name of the sdcard.
-        String directoryString = Environment.getExternalStorageDirectory().getPath();
-
         try { // Surround with try and catch in case of failure.
 
-            myInput = getApplicationContext().getAssets().open("kppd");
+            myInput = this.getResources().openRawResource(R.raw.kppd);
+                    //Resources.openRawResource(R.raw.kppd);
+                    //getApplicationContext().getResources().openRawResource();
+                    //getAssets().open("kppd");
 
             // Path to the just created empty file
             String outFileName = directoryString + "/kppd";
@@ -91,8 +86,12 @@ public class InstallActivity extends AppCompatActivity {
             myOutput.flush();
             myOutput.close();
             myInput.close();
+            rebootOK = true;
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error: Please check permissions....",
+                    Toast.LENGTH_LONG).show();
+            rebootOK = false;
         } // End of try and catch to copy kppd.
 
         /*
@@ -100,9 +99,21 @@ public class InstallActivity extends AppCompatActivity {
          */
 
         // Copy the files.
+        String[] remountFS = {"su", "-c", "mount -o rw,remount /system"};
+        try {
+            Runtime.getRuntime().exec(remountFS);
+            Toast.makeText(getApplicationContext(), "remounting",
+                    Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } // End of try catch for Copy files.
+
+        // Copy the files.
         String[] installkppd = {"su", "-c", "cp "+directoryString+"/kppd /system/bin/"};
         try {
             Runtime.getRuntime().exec(installkppd);
+            Toast.makeText(getApplicationContext(), "installing",
+                    Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } // End of try catch for Copy files.
@@ -111,33 +122,23 @@ public class InstallActivity extends AppCompatActivity {
         String[] chmodkppd = {"su", "-c", "chmod 755 /system/bin/kppd"};
         try {
             Runtime.getRuntime().exec(chmodkppd);
+            Toast.makeText(getApplicationContext(), "modding",
+                    Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } // End of try catch for Copy files.
 
-        // Remove the old files...
-        String[] removeFiles = {"su", "-c", "rm "+directoryString+"/kppd"};
+        // Copy the files.
+        String[] remOldkppd = {"su", "-c", "rm "+directoryString+"/kppd"};
         try {
-            Runtime.getRuntime().exec(removeFiles);
+            Runtime.getRuntime().exec(remOldkppd);
+            Toast.makeText(getApplicationContext(), "removing old",
+                    Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-        } // End of try catch for remove old files...
+        } // End of try catch for Copy files.
 
-        int timer = 150000;
-
-        for (int i = 0; i <= timer; i++) {
-
-            if (i == 149999) {
-                // Reboot...
-                String[] rebootPhone = {"su", "-c", "reboot"};
-                try {
-                    Runtime.getRuntime().exec(rebootPhone);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } // End of try catch for reboot...
-            } // End of if.
-
-        } // End of for.
+                finish();
 
         /*
          * We don't worry about remounting system as RO, since the last command is to reboot.
